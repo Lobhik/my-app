@@ -8,6 +8,12 @@ const Form = ({ cities }) => {
   const [assemblyNumbers, setAssemblyNumbers] = useState([]);
   const [selectedAssemblyNo, setSelectedAssemblyNo] = useState(''); // Added missing state variable
   const [villages, setVillages] = useState([]);
+  ///
+  const [firstname, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [usersdata, setUsersdata] = useState("");
+
+  ///
 
   const getAssemblies = async (city) => {
     try {
@@ -59,6 +65,39 @@ const Form = ({ cities }) => {
       console.log(error);
     }
   };
+  ///
+  
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("data##",firstname)
+    try {
+      let res = await fetch("http://127.0.0.1:5000/user/details", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          },
+         // mode:'cors',
+        body: JSON.stringify({
+          name_en: firstname,
+          assembly_no: 70
+        }),
+      });
+      console.log("first##",res)
+      let resJson = await res.json();
+      console.log("response##",resJson)
+      setUsersdata(resJson)
+      if (res.status === 200) {
+        setName("");
+        setMessage("User created successfully");
+      } else {
+        setMessage("Some error occured");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /////
 
 
   useEffect(() => {
@@ -104,7 +143,7 @@ const Form = ({ cities }) => {
     setSelectedAssemblyNo(selectedValue);
     setVillages([]); // Clear villages
   };
-
+  console.log("usersttttt",usersdata)
   return (
     <div>
       <div className="bg"></div>
@@ -170,6 +209,51 @@ const Form = ({ cities }) => {
               ))}
             </select>
           </div>
+          <div className='form-group'>
+            {/* <input type="text" placeholder="First Name" className="text-box"  onChange={handleFirstNameChange} value={firstName} /><br /><br /> */}
+            <input type="text" placeholder="First Name" className="text-box"  name="firstName" value={firstname} onChange={(e) => setName(e.target.value)}  /><br /><br />
+
+          </div>
+          <div className='form-group'>
+            <input type="text" placeholder="Last Name" className="text-box"  name="lastName"  /><br /><br />
+          </div>
+          <div className="form-group">
+            <button type="submit" onClick={handleSubmit} className="search-button">Search</button>
+          </div>
+          {/* TEST*/}
+
+          
+          <div>
+            {usersdata ? (
+              <table>
+                <thead>
+                  <tr>
+                    {/* <th>ID</th> */}
+                    
+                    <th>Name</th>
+                    <th>Village Name</th>
+                    <th>District</th>
+                    {/* Add more headers based on your data structure */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {usersdata.map(item => (
+                    <tr key={item.id}>
+                      {/* <td>{item.id}</td> */}
+                      <td>{item.name_en}</td>
+                      <td>{item.village_name}</td>
+                      <td>{item.district}</td>
+                      {/* Add more cells based on your data structure */}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
+
+        {/*END TEST*/}
         </form>
       </div>
     </div>
