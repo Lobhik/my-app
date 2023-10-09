@@ -69,9 +69,8 @@ const Form = ({ cities }) => {
   
   let handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("data##",firstname)
     try {
-      let res = await fetch("http://127.0.0.1:5000/user/details", {
+      let res = await fetch("http://13.48.67.44/user/details", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -82,9 +81,7 @@ const Form = ({ cities }) => {
           assembly_no: 70
         }),
       });
-      console.log("first##",res)
       let resJson = await res.json();
-      console.log("response##",resJson)
       setUsersdata(resJson)
       if (res.status === 200) {
         setName("");
